@@ -1,0 +1,12 @@
+{
+  "crons": [
+    { "path": "/api/cron/outbox-drain", "schedule": "* * * * *" },
+    { "path": "/api/cron/payout-run", "schedule": "0 9 * * 1" },
+    { "path": "/api/cron/risk-recompute", "schedule": "0 3 * * *" }
+  ],
+  "functions": {
+    "app/api/cron/outbox-drain/route.ts": { "maxDuration": 55 },
+    "app/api/cron/payout-run/route.ts": { "maxDuration": 300 },
+    "app/api/cron/risk-recompute/route.ts": { "maxDuration": 300 }
+  }
+}

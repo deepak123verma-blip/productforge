@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   ProductForge design tokens — THE single source of truth.
+   Every colour, radius, gap, shadow and type size in the product derives
+   from these. Never hardcode a hex or an off-scale px value in a
+   component. Spec: docs/03-UIUX-Design-Spec.md §2.
+   ===================================================================== */
+
+:root {
+  /* Canvas & surface */
+  --canvas:        #E7EAE5;   /* page bg + faint organic line texture, 3% opacity */
+  --surface:       #FFFFFF;
+  --surface-sunk:  #F4F5F2;
+
+  /* Ink */
+  --ink:           #16181C;
+  --ink-2:         #5C6268;
+  --ink-3:         #6B7175;   /* captions on --surface / --surface-sunk ONLY (AA-checked in CI).
+                                 Never on pastels or canvas — --ink-2 is mandatory there.
+                                 Ruling A1 in docs/DECISIONS.md: no lightness of ink-3 passes on pastels. */
+
+  /* Semantic pastels — one hue per domain, never decorative.
+     mint=money · butter=products · blush=buyers · lilac=traffic · sky=referrals */
+  --mint:          #D5E4DA;
+  --butter:        #F8E5A6;
+  --blush:         #F6DBE7;
+  --lilac:         #E1DAF6;
+  --sky:           #DAE6F4;
+
+  /* System */
+  --positive:      #2F7D5B;
+  --warning:       #B8791F;
+  --negative:      #C0453C;
+  --hairline:      rgba(22, 24, 28, 0.08);
+  --ink-12:        rgba(22, 24, 28, 0.12);  /* progress-bar track (spec §5.4) */
+
+  /* Shape */
+  --radius-panel:  32px;
+  --radius-panel-sm: 24px;  /* panel radius under 640px (spec §3.2) */
+  --radius-card:   22px;
+  --radius-chip:   999px;
+  --radius-field:  14px;
+  --radius-tile:   12px;
+
+  /* Space — 4px-based scale: 4 8 12 16 20 24 32 44 64. Nothing between. */
+  --gap-tight:     12px;
+  --gap:           20px;
+  --gap-loose:     32px;
+  --gap-section:   44px;
+
+  /* Elevation — exactly two shadows exist in the product.
+     Cards have NO shadow and NO border. */
+  --shadow-panel:  0 24px 60px rgba(22, 24, 28, 0.06);  /* floating panel + icon rail only */
+  --shadow-lift:   0 8px 24px rgba(22, 24, 28, 0.08);   /* modals, dropdowns only */
+
+  /* Component dimensions (spec §3.5) */
+  --stat-card-h:    132px;
+  --feature-card-h: 156px;
+  --rail-w:         72px;
+  --panel-max-w:    1280px;
+  --mobile-frame-w: 375px;  /* the design-review viewport (spec §3.2) */
+
+  /* Landing hero miniature: real components at 0.6 scale (PRD §4.1) */
+  --miniature-inner-w: 560px;
+  --miniature-w: 336px;   /* 560 × 0.6 */
+  --miniature-h: 480px;
+
+  /* Type scale (size / line-height) */
+  --text-display-xl: 3.5rem;    --leading-display-xl: 1.05;
+  --text-display-l:  2.25rem;   --leading-display-l:  1.1;
+  --text-display-m:  1.5rem;    --leading-display-m:  1.2;
+  --text-display-s:  1.125rem;  --leading-display-s:  1.3;
+  --text-body:       1rem;      --leading-body:       1.55;
+  --text-body-s:     0.875rem;  --leading-body-s:     1.5;
+  --text-caption:    0.75rem;   --leading-caption:    1.4;
+  --text-stat:       2.5rem;    --leading-stat:       1;
+
+  /* Font stacks — families are loaded via next/font in app/fonts.ts,
+     which sets these variables. Fallbacks only here. */
+  --font-display: var(--font-bricolage, "Bricolage Grotesque"), ui-sans-serif, sans-serif;
+  --font-body:    var(--font-general-sans, "General Sans"), ui-sans-serif, sans-serif;
+  --font-figures: var(--font-space-grotesk, "Space Grotesk"), ui-monospace, monospace;
+}
+
+/* Base — canvas with the faint organic line texture (tiling SVG, 3% opacity, <8KB) */
+body {
+  background-color: var(--canvas);
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%2316181C' stroke-opacity='0.03' stroke-width='1'%3E%3Cpath d='M-20 40 C 60 10, 120 70, 260 30'/%3E%3Cpath d='M-20 110 C 80 80, 140 150, 260 100'/%3E%3Cpath d='M-20 180 C 50 150, 170 220, 260 170'/%3E%3Cpath d='M-20 240 C 90 210, 150 260, 260 235'/%3E%3C/g%3E%3C/svg%3E");
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+
+/* =====================================================================
+   Component-layer rules that belong to tokens, not to components:
+   the arrow chip motion, the skeleton shimmer. Components reference
+   these classes; the values live only here.
+   ===================================================================== */
+
+.arrow-chip {
+  transition: transform 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+a:hover > .arrow-chip,
+button:hover > .arrow-chip,
+article:hover .arrow-chip {
+  transform: translate(2px, -2px);
+}
+
+@keyframes pf-shimmer {
+  0% { opacity: 1; }
+  50% { opacity: 0.55; }
+  100% { opacity: 1; }
+}
+.skeleton {
+  background-color: var(--surface-sunk);
+  animation: pf-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Visible keyboard focus everywhere — never removed without a replacement */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Motion floor */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# builds
+build/
+dist/
+*.tsbuildinfo
+
+# env — everything except the example
+.env
+.env.*
+!.env.example
+
+# claude
+.claude/settings.local.json
+
+# misc
+.DS_Store
+*.pem
+coverage/
+.vercel/
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
